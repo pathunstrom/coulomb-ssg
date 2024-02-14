@@ -2,4 +2,10 @@
 Coulomb is a static site generator.
 """
 
-import coulomb.main
+import coulomb.configurations
+
+from coulomb.configurations import Site
+
+__all__ = [
+    "Site"
+]
