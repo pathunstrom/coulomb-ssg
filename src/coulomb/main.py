@@ -1,14 +1,14 @@
 import pathlib
-
 import coulomb
 
 
 def build(build_dir: pathlib.Path, source_dir: pathlib.Path, site_configuration: coulomb.Site):
     """"""
-    if site_configuration.discover_html:
-        for file_path in source_dir.glob("**/*.html"):
-            output_path = build_dir/file_path.relative_to(source_dir)
-            output_path.write_bytes(file_path.read_bytes())
+    artifact: coulomb.Artifact
+    for artifact in site_configuration.generate_artifacts(source_dir):
+        output_path = build_dir / artifact.route
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        artifact.write(output_path)
 
 
 def run():
@@ -20,5 +20,9 @@ def run():
 
     source_path = pathlib.Path.cwd() / "project"
 
-    site = coulomb.Site(discover_html=True)
+    site = coulomb.Site(
+        discover_html=True,
+        component_path=pathlib.Path("project/components/").absolute(),
+        views=[coulomb.configurations.JinjaxRoute("index.html", "Layout", "Piper")]
+    )
     build(output_path, source_path, site)
