@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "coulomb-ssg"
+version = "0.1.0"
+description = "A static site generator"
+authors = ["Piper Thunstrom <pathunstrom@gmail.com>"]
+readme = "README.md"
+packages = [
+    {include="coulomb", from="src"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.group.dev.dependencies]
+nox = "^2023.4.22"
+
+
+[tool.poetry.group.tests.dependencies]
+pytest = "^8.0.0"
+
+[tool.poetry.scripts]
+coulomb = "coulomb.main:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
