@@ -1,15 +1,7 @@
 import datetime
 from dataclasses import dataclass
-from typing import Any
 
 import coulomb
-
-
-def dynamic_setup(site: coulomb.Site) -> dict[str, Any]:
-    return {
-        "all_authors": [*site.data.get(Author)],
-        "links": [*site.data.get(Link)],
-    }
 
 
 site = coulomb.Site(
@@ -87,15 +79,16 @@ class HomePage(coulomb.View):
 
 @site.register_view
 class BlogPostPage(coulomb.View):
-    for_each = coulomb.Dynamic(Post, filter=lambda p: p.published <= datetime.datetime.now(), context_key="post")
+    for_each = coulomb.Dynamic(Post, filter=lambda p: p.published <= datetime.datetime.now())
+    context_key = "post"
     path = "/blog/{date}/{slug}"
     path_components = [
-        PathComponent(
+        coulomb.PathComponent(
             from_resource="published",
             format_field="date",
-            transform=date_path  # Convert date/datetime to "YYYY/MM/DD"
+            transform=coulomb.transforms.date_path  # Convert date/datetime to "YYYY/MM/DD"
         ),
-        PathComponent(
+        coulomb.PathComponent(
             from_resource="slug"
         )
     ]
