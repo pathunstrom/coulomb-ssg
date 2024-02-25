@@ -26,9 +26,9 @@ class JinjaxRoute:
 
 @dataclasses.dataclass
 class Site:
-    views: list[JinjaxRoute]
-    discover_html: bool
-    component_path: pathlib.Path
+    views: list[JinjaxRoute] = dataclasses.field(default_factory=list)
+    discover_html: bool = False
+    component_path: pathlib.Path = pathlib.Path.cwd() / "components"
     # data models
     #
 
