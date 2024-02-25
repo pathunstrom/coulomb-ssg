@@ -54,4 +54,33 @@ Coulomb should have a cookie cutter or similar tool for generating a working
 configuration. It should make it very easy to add new configurations to
 existing projects. The shape of your files should also be configurable.
 
+## Development Setup
+
+To develop Coulomb, you'll need a few things:
+
+* Python 3.9 available in your environment [Python 3.9 Installer][py39]
+* Your primary Python environment [Python Download][py_download]
+  (It does not need to be 3.9, can be any version of Python from 3.9 to 3.12)
+* Poetry installed in your primary Python environment [Install poetry][poetry_install]
+* A git client
+
+Setup:
+
+1. Fork the [coulomb github repository][coulomb-github] and then clone your fork.
+2. Create a virtual environment using `poetry install`
+3. Run `pre-commit install`
+
+Many parts of development are handled by `nox`. Important actions include:
+
+* Running tests: `nox -s tests`
+* Applying styles: `nox -t styles`
+
+While these are available as conveniences, the pre-commit configuration handles
+running the tests against the oldest version of Python Coulomb supports and both
+linting and formatting tasks.
+
 [statik]: https://getstatik.com/
+[py39]: https://www.python.org/downloads/release/python-3913/
+[py_download]: https://www.python.org/downloads/
+[poetry_install]: https://python-poetry.org/docs/#installation
+[coulomb-github]: https://github.com/pathunstrom/coulomb-ssg
