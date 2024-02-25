@@ -2,7 +2,7 @@ import pathlib
 
 import pytest
 
-import coulomb
+import coulomb.processors
 
 
 def test_get_configuration_object__directory():
@@ -13,7 +13,7 @@ def test_get_configuration_object__directory():
     """
     project_path = pathlib.Path(__file__).parent / "projects" / "just-settings"
 
-    site_object = coulomb.configurations.get_configuration_object(project_path)
+    site_object = coulomb.processors.get_configuration_object(project_path)
     assert site_object == coulomb.Site()
 
 
@@ -25,7 +25,7 @@ def test_get_configuration_object__default_file():
     """
     project_path = pathlib.Path(__file__).parent / "projects" / "just-settings" / "settings.py"
 
-    site_object = coulomb.configurations.get_configuration_object(project_path)
+    site_object = coulomb.processors.get_configuration_object(project_path)
     assert site_object == coulomb.Site()
 
 
@@ -39,7 +39,7 @@ def test_get_configuration_object__no_file():
     project_path = pathlib.Path(__file__).parent / "projects" / "just-settings" / "no-file.py"
 
     with pytest.raises(ValueError):
-        coulomb.configurations.get_configuration_object(project_path)
+        coulomb.processors.get_configuration_object(project_path)
 
 
 def test_get_configuration_object__custom_object_name():
@@ -51,7 +51,7 @@ def test_get_configuration_object__custom_object_name():
     """
     project_path = pathlib.Path(__file__).parent / "projects" / "just-settings-blog-object" / "settings.py"
 
-    site_object = coulomb.configurations.get_configuration_object(project_path, "blog")
+    site_object = coulomb.processors.get_configuration_object(project_path, "blog")
     assert site_object == coulomb.Site()
 
 
@@ -66,4 +66,4 @@ def test_get_configuration_object__settings_object_does_not_exist():
     project_path = pathlib.Path(__file__).parent / "projects" / "just-settings-blog-object" / "settings.py"
 
     with pytest.raises(ValueError):
-        coulomb.configurations.get_configuration_object(project_path)
+        coulomb.processors.get_configuration_object(project_path)
