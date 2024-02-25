@@ -4,7 +4,10 @@ from typing import Protocol
 
 class Artifact(Protocol):
     route: Path
-    name: str  #: Name to notify user of status.
+
+    @property
+    def name(self) -> str:
+        pass
 
     def write(self, absolute_path: Path) -> None:
         pass

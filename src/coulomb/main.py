@@ -2,7 +2,9 @@ import pathlib
 import coulomb
 
 
-def build(build_dir: pathlib.Path, source_dir: pathlib.Path, site_configuration: coulomb.Site):
+def build(
+    build_dir: pathlib.Path, source_dir: pathlib.Path, site_configuration: coulomb.Site
+):
     """"""
     artifact: coulomb.Artifact
     for artifact in site_configuration.generate_artifacts(source_dir):
@@ -23,6 +25,6 @@ def run():
     site = coulomb.Site(
         discover_html=True,
         component_path=pathlib.Path("project/components/").absolute(),
-        views=[coulomb.configurations.JinjaxRoute("index.html", "Layout", "Piper")]
+        views=[coulomb.configurations.JinjaxRoute("index.html", "Layout", "Piper")],
     )
     build(output_path, source_path, site)

@@ -16,6 +16,10 @@ class HTMLWriter:
     def write(self, path: pathlib.Path):
         path.write_text(self.content)
 
+    @property
+    def name(self) -> str:
+        return f"HTMLPath - {self.route}"
+
 
 @dataclasses.dataclass
 class JinjaxRoute:
@@ -32,7 +36,9 @@ class Site:
     # data models
     #
 
-    def generate_artifacts(self, source_dir: pathlib.Path) -> Iterable[coulomb.build.Artifact]:
+    def generate_artifacts(
+        self, source_dir: pathlib.Path
+    ) -> Iterable[coulomb.build.Artifact]:
         catalog = jinjax.Catalog()
         catalog.add_folder(self.component_path)
         for view in self.views:
