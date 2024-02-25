@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: nox-run
+        name: nox
+        entry: nox -p 3.9
+        language: python
+        always_run: true
+        pass_filenames: false
