@@ -67,3 +67,30 @@ def test_get_configuration_object__settings_object_does_not_exist():
 
     with pytest.raises(ValueError):
         coulomb.processors.get_configuration_object(project_path)
+
+
+def test_site_register_view__call_after_definition():
+    site = coulomb.Site()
+
+    assert not site.views
+
+    view = coulomb.TemplatedView(
+        path="/some/path",
+        template="foo"
+    )
+
+    site.register_view(view)
+    assert site.views[0] == view
+
+
+def test_site_register_view__decorator():
+    site = coulomb.Site()
+
+    assert not site.views
+
+    @site.register_view
+    class MyView(coulomb.TemplatedView):
+        path = "/some/path"
+        template = "foo"
+
+    assert site.views[0] == MyView

@@ -37,7 +37,6 @@ class ArtifactGenerator(Protocol):
 class ForEach:
     resource: Iterable[Any]
     key: str
-    path_components: Iterable["PathComponent"]
 
 
 class ViewProtocol(ArtifactGenerator, Protocol):

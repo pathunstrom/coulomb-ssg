@@ -1,4 +1,5 @@
 import datetime
+import pathlib
 from dataclasses import dataclass
 
 import coulomb
@@ -13,10 +14,6 @@ site = coulomb.Site(
         "links": coulomb.Dynamic('Link'),
     },
     # base_path = "/"  # Will default to root, but configurable for when hanging generated sites off a root path
-    assets = coulomb.Assets(
-        source="./assets",
-        destination="./static/"
-    )
 )
 
 
@@ -69,41 +66,35 @@ class Post:
 
 
 @site.register_view
-class HomePage(coulomb.View):
+class HomePage(coulomb.TemplatedView):
     path = "/"
-    component = "HomePage"
+    template = "HomePage"
     context = {
         "body": coulomb.Dynamic(Body, filter=lambda b: b.id == "home", single=True)  # Throw an error if the final output has more than 1.
     }
 
 
 @site.register_view
-class BlogPostPage(coulomb.View):
-    for_each = coulomb.Dynamic(Post, filter=lambda p: p.published <= datetime.datetime.now())
-    context_key = "post"
-    path = "/blog/{date}/{slug}"
-    path_components = [
-        coulomb.PathComponent(
-            from_resource="published",
-            format_field="date",
-            transform=coulomb.transforms.date_path  # Convert date/datetime to "YYYY/MM/DD"
-        ),
-        coulomb.PathComponent(
-            from_resource="slug"
-        )
-    ]
+class BlogPostPage(coulomb.TemplatedView):
+    path = "/blog/{post.date:%y/%m/%d}/{post.slug}"
+    for_each = coulomb.ForEach(
+        key="post",
+        resource=(post for post in site.data.query(Post) if post.published <= datetime.datetime.now())
+    )
     template = "Article"
 
 
 @site.register_view
-class BlogIndexPage(coulomb.View):
+class BlogIndexPage(coulomb.TemplatedView):
     path = "/blog"
     template = "ArticleIndex"
     context = {
         "page_title": "Blog",
-        "posts": coulomb.Dynamic(
-            Post,
-            filter=lambda p: p.published <= datetime.datetime.now(),
-            sort_key=lambda p: datetime.date.today() - p.published
-        )
+        "posts": (post for post in site.data.query(Post, sorted=lambda p: datetime.date.today() - p.published))
     }
+
+
+@site.register_view
+class Assets(coulomb.StaticFolderView):
+    path = "/static"
+    src_dir = pathlib.Path("assets")

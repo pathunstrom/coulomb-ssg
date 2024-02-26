@@ -25,6 +25,10 @@ def run():
     site = coulomb.Site(
         discover_html=True,
         component_path=pathlib.Path("project/components/").absolute(),
-        views=[coulomb.configurations.JinjaxRoute("index.html", "Layout", "Piper")],
+        views=[
+            coulomb.configurations.TemplatedView(
+                path="index.html", template="Layout", context={"name": "Piper"}
+            )
+        ],
     )
     build(output_path, source_path, site)
