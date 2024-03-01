@@ -79,6 +79,7 @@ PathLike = Union[str, bytes, os.PathLike]
 class Site:
     views: list[coulomb.types.ViewProtocol] = dataclasses.field(default_factory=list)
     models: list[Tuple[type, PathLike]] = dataclasses.field(default_factory=list)
+    context: dict[str, Any] = dataclasses.field(default_factory=dict)
     discover_html: bool = False
     component_path: pathlib.Path = pathlib.Path.cwd() / "components"
 
@@ -89,11 +90,11 @@ class Site:
         catalog.add_folder(self.component_path)
 
         for view in self.views:
-            yield from view.generate_artifacts({}, catalog)
+            yield from view.generate_artifacts(self.context, catalog)
 
         if self.discover_html:
             yield from HTMLDiscoveryView(path=str(source_dir)).generate_artifacts(
-                {}, catalog
+                self.context, catalog
             )
 
     def register_view(self, view: GenericView) -> GenericView:

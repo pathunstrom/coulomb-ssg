@@ -1,9 +1,12 @@
 import dataclasses
 import pathlib
+import typing
+from typing import Any, Iterable
 
 import pytest
 
 import coulomb.processors
+from coulomb import Artifact
 
 
 def test_get_configuration_object__directory():
@@ -173,3 +176,51 @@ def test_site_register_model__call_with_two_pathlikes(first_path, second_path):
         site.register_model(first_path, second_path)  # type: ignore
 
     assert str(err.value) == "Cannot pass path as both arguments."
+
+
+def test_site_accepts_site_wide_context():
+    example_context = {
+        "site_name": "Coulomb Static Site Generator"
+    }
+
+    site = coulomb.Site(context=example_context)
+    assert site.context == example_context
+
+
+def test_site_passes_site_context_to_views():
+
+    @dataclasses.dataclass
+    class TestView(coulomb.types.ViewProtocol):
+        context: dict[str, typing.Any]
+        path: str
+        for_each: None
+
+        @classmethod
+        def generate_artifacts(
+            cls, context: dict[str, Any], templating_engine: Any
+        ) -> Iterable[Artifact]:
+            yield TestArtifact(context=context)
+
+    @dataclasses.dataclass
+    class TestArtifact(coulomb.types.Artifact):
+        context: dict[str, typing.Any]
+        route: pathlib.Path = pathlib.Path('foo')
+
+        @property
+        def name(self) -> str:
+            return "test"
+
+        def write(self, path):
+            pass
+
+    site = coulomb.Site(
+        context={
+            "foo": "bar"
+        }
+    )
+
+    site.register_view(TestView)
+
+    artifacts = list(site.generate_artifacts(pathlib.Path("/")))
+    assert len(artifacts) == 1
+    assert typing.cast(TestArtifact, artifacts[0]).context == {"foo": "bar"}
