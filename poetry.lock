@@ -138,13 +138,13 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "jinjax"
-version = "0.30"
+version = "0.31"
 description = "Replace your HTML templates with Python server-Side components"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "jinjax-0.30-py3-none-any.whl", hash = "sha256:f06a65844da96ce8e6dada2a16a0916777f64ae1046f6ec6b388f8f7eb10b0d6"},
-    {file = "jinjax-0.30.tar.gz", hash = "sha256:458172a20a344d62073a08f6d2c57a52d752e6857c87d6bc9231316bc6fcb2bf"},
+    {file = "jinjax-0.31-py3-none-any.whl", hash = "sha256:7003b4c539795423f064fc20ee5c96fcc0d4a78e855e6ab1e38ec7ab8b9da0ce"},
+    {file = "jinjax-0.31.tar.gz", hash = "sha256:2883b38ed95ffdf21c5f4e33d0ac81ffacab3f1f8ccd704a534f746d5c22f834"},
 ]
 
 [package.dependencies]
@@ -460,4 +460,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "5b0d17dc7179704ea7d2a185c5987884a492f0b34f726250ca30049f6b282e51"
+content-hash = "1238af614f12f690d8e23541cfce174b4d53d3ce86327f1b2713970235f3677a"

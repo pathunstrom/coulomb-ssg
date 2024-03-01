@@ -1,10 +1,12 @@
 import dataclasses
+import os
 import pathlib
 import typing
-from typing import Any, Iterable, Union
+from typing import Any, Iterable, Union, overload, Callable, Optional, Tuple, cast
 
 import jinjax
 
+import coulomb.utils
 import coulomb.types
 
 
@@ -69,11 +71,14 @@ class HTMLWriter:
 
 
 GenericView = typing.TypeVar("GenericView", bound=coulomb.types.ViewProtocol)
+GenericModel = typing.TypeVar("GenericModel", bound=type)
+PathLike = Union[str, bytes, os.PathLike]
 
 
 @dataclasses.dataclass
 class Site:
     views: list[coulomb.types.ViewProtocol] = dataclasses.field(default_factory=list)
+    models: list[Tuple[type, PathLike]] = dataclasses.field(default_factory=list)
     discover_html: bool = False
     component_path: pathlib.Path = pathlib.Path.cwd() / "components"
 
@@ -94,3 +99,43 @@ class Site:
     def register_view(self, view: GenericView) -> GenericView:
         self.views.append(typing.cast(coulomb.types.ViewProtocol, view))
         return view
+
+    @overload
+    def register_model(self, model_or_path: GenericModel) -> GenericModel:
+        """Decorator without path form."""
+
+    @overload
+    def register_model(
+        self, model_or_path: PathLike
+    ) -> Callable[[GenericModel], GenericModel]:
+        """Register a model with a custom path as a decorator."""
+
+    @overload
+    def register_model(
+        self, model_or_path: GenericModel, path: PathLike
+    ) -> GenericModel:
+        """Register a model post instantiation with a custom path."""
+
+    def register_model(
+        self,
+        model_or_path: Union[GenericModel, PathLike],
+        path: Optional[PathLike] = None,
+    ) -> Union[GenericModel, Callable[[GenericModel], GenericModel]]:
+        if isinstance(model_or_path, (os.PathLike, str, bytes)):
+            if path is not None:
+                raise ValueError("Cannot pass path as both arguments.")
+            path = model_or_path
+
+            def register_model_closure(model: GenericModel) -> GenericModel:
+                self.models.append((model, cast(PathLike, path)))
+                return model
+
+            return register_model_closure
+        elif isinstance(model_or_path, type):
+            model = model_or_path
+            if path is None:
+                path = coulomb.utils.camel_to_snake(model.__name__)
+
+            self.models.append((model, path))
+            return model
+        raise ValueError("Model or path required.")

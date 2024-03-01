@@ -1,3 +1,4 @@
+import dataclasses
 import pathlib
 
 import pytest
@@ -94,3 +95,81 @@ def test_site_register_view__decorator():
         template = "foo"
 
     assert site.views[0] == MyView
+
+
+def test_site_register_model__decorator_with_path():
+    site = coulomb.Site()
+
+    assert not site.models
+
+    @site.register_model("./my_cool_path")
+    @dataclasses.dataclass
+    class DataObject:
+        data: str
+        date: int
+
+    assert site.models[0] == (DataObject, "./my_cool_path")
+
+
+def test_site_register_model__decorator_no_path():
+    site = coulomb.Site()
+
+    assert not site.models
+
+    @site.register_model
+    @dataclasses.dataclass
+    class DataObject:
+        data: str
+        date: int
+
+    assert site.models[0] == (DataObject, "data_object")
+
+
+def test_site_register_model__call_after_definition_with_path():
+    @dataclasses.dataclass
+    class DataObject:
+        data: str
+        date: int
+
+    site = coulomb.Site()
+
+    assert not site.models
+
+    site.register_model(DataObject, "./my_cool_path")
+
+    assert site.models[0] == (DataObject, "./my_cool_path")
+
+
+def test_site_register_model__call_after_definition_without_path():
+    @dataclasses.dataclass
+    class DataObject:
+        data: str
+        date: int
+
+    site = coulomb.Site()
+
+    assert not site.models
+
+    site.register_model(DataObject)
+
+    assert site.models[0] == (DataObject, "data_object")
+
+
+@pytest.mark.parametrize(
+    "first_path, second_path",
+    (
+        ("foo", "bar"),
+        (pathlib.Path("foo"), "bar"),
+        (pathlib.Path("foo"), b"bar"),
+        (b"bad", "foo"),
+        (b"first", b"second"),
+        (pathlib.Path("red"), pathlib.Path("green"))
+    )
+)
+def test_site_register_model__call_with_two_pathlikes(first_path, second_path):
+    site = coulomb.Site()
+
+    with pytest.raises(ValueError) as err:
+        site.register_model(first_path, second_path)  # type: ignore
+
+    assert str(err.value) == "Cannot pass path as both arguments."

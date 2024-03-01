@@ -10,7 +10,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-jinjax = "^0.30"
+jinjax = "^0.31"
 
 [tool.poetry.group.dev.dependencies]
 nox = "^2023.4.22"
