@@ -23,7 +23,7 @@ site = coulomb.Site(
     ],
     context={
         "site_name": "Our Site"
-    }
+    },
 )
 
 

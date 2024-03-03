@@ -224,3 +224,10 @@ def test_site_passes_site_context_to_views():
     artifacts = list(site.generate_artifacts(pathlib.Path("/")))
     assert len(artifacts) == 1
     assert typing.cast(TestArtifact, artifacts[0]).context == {"foo": "bar"}
+
+
+def test_site_has_base_path():
+
+    site = coulomb.Site(base_path="./foo")
+
+    assert site.base_path == "./foo"

@@ -72,7 +72,7 @@ class HTMLWriter:
 
 GenericView = typing.TypeVar("GenericView", bound=coulomb.types.ViewProtocol)
 GenericModel = typing.TypeVar("GenericModel", bound=type)
-PathLike = Union[str, bytes, os.PathLike]
+PathLike = Union[str, os.PathLike]
 
 
 @dataclasses.dataclass
@@ -82,6 +82,7 @@ class Site:
     context: dict[str, Any] = dataclasses.field(default_factory=dict)
     discover_html: bool = False
     component_path: pathlib.Path = pathlib.Path.cwd() / "components"
+    base_path: PathLike = pathlib.Path(".")  # Creates no folder in the output path.
 
     def generate_artifacts(
         self, source_dir: pathlib.Path

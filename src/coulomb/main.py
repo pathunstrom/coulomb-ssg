@@ -8,7 +8,7 @@ def build(
     """"""
     artifact: coulomb.Artifact
     for artifact in site_configuration.generate_artifacts(source_dir):
-        output_path = build_dir / artifact.route
+        output_path = build_dir / site_configuration.base_path / artifact.route
         output_path.parent.mkdir(parents=True, exist_ok=True)
         artifact.write(output_path)
 
