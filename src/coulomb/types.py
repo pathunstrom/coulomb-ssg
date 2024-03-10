@@ -1,6 +1,17 @@
 import dataclasses
 from pathlib import Path
-from typing import Any, Callable, Protocol, Iterable, Union, NewType
+from typing import (
+    Any,
+    Callable,
+    Protocol,
+    Iterable,
+    Union,
+    NewType,
+    TypeVar,
+    Generic,
+    Type,
+    Optional,
+)
 
 
 class Artifact(Protocol):
@@ -35,7 +46,7 @@ class ArtifactGenerator(Protocol):
 
 @dataclasses.dataclass
 class ForEach:
-    resource: Iterable[Any]
+    resource: Union[Iterable[Any], "Dynamic"]
     key: str
 
 
@@ -53,3 +64,14 @@ class PathComponent:
 
 
 Content = NewType("Content", str)
+
+
+QueryType = TypeVar("QueryType", bound=Union[type, str])
+
+
+@dataclasses.dataclass
+class Dynamic(Generic[QueryType]):
+    model: Type[QueryType]
+    filter: Callable[[QueryType], bool] = lambda x: True  # noqa: E731
+    sort_key: Optional[Callable[[QueryType], Any]] = None
+    single: bool = False

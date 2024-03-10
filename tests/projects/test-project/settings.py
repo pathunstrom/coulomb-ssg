@@ -60,7 +60,10 @@ class BlogPost(coulomb.TemplatedView):
     path = "./blog/{post.date:%y/%m/%d}/{post.slug}"
     for_each = coulomb.ForEach(
         key="post",
-        resource=[]
+        resource=coulomb.Dynamic(
+            model=Post,
+            filter=lambda p: p.published is not None
+        )
     )
     template = "BlogPost"
 
