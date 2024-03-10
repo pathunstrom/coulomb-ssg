@@ -1,6 +1,6 @@
 import dataclasses
 from pathlib import Path
-from typing import Any, Callable, Protocol, Iterable, Union
+from typing import Any, Callable, Protocol, Iterable, Union, NewType
 
 
 class Artifact(Protocol):
@@ -50,3 +50,6 @@ class PathComponent:
     resource_field: str
     format_field: Union[str, None] = None
     transform: Union[Callable[[Any], str], None] = None
+
+
+Content = NewType("Content", str)

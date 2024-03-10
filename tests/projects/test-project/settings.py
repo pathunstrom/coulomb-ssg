@@ -31,6 +31,7 @@ site = coulomb.Site(
 class Post:
     title: str
     published: datetime.datetime
+    content: coulomb.Content
 
 
 @site.register_model("./page-bodies")
