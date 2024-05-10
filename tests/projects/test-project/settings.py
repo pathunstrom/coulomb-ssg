@@ -32,11 +32,12 @@ class Post:
     title: str
     published: datetime.datetime
     content: coulomb.Content
+    author: Author
 
 
 @site.register_model("./page-bodies")
 class Page:
-    content: str
+    content: coulomb.Content
 
 
 class Project:
